@@ -3,14 +3,13 @@ unit ENet_Protocol;
 {
   ENet - Reliable UDP networking library
 
-  Delphi 7 DLL header: ENet_Protocol.pas
-  Copyright (c) 2014-2015 Dmitry D. Chernov aka Black Doomer
+  FreePascal DLL header: ENet_Protocol.pas
+  Copyright (c) 2015 Dmitry D. Chernov aka Black Doomer
 
   Original file: protocol.h
   Copyright (c) 2002-2014 Lee Salzman
 
-  Version 1 for 1.3.12: 16.08.2014
-  Version 2 for 1.3.12: 10.02.2015
+  Version 1 for 1.3.12: 25.02.2015
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -46,6 +45,16 @@ const
    ENET_PROTOCOL_MAXIMUM_PEER_ID         = $FFF;
    ENET_PROTOCOL_MAXIMUM_FRAGMENT_COUNT  = 1024 * 1024;
 
+   // ENetProtocolFlag
+   ENET_PROTOCOL_COMMAND_FLAG_ACKNOWLEDGE = 1 shl 7;
+   ENET_PROTOCOL_COMMAND_FLAG_UNSEQUENCED = 1 shl 6;
+   ENET_PROTOCOL_HEADER_FLAG_COMPRESSED   = 1 shl 14;
+   ENET_PROTOCOL_HEADER_FLAG_SENT_TIME    = 1 shl 15;
+   ENET_PROTOCOL_HEADER_FLAG_MASK         = ENET_PROTOCOL_HEADER_FLAG_COMPRESSED or
+                                            ENET_PROTOCOL_HEADER_FLAG_SENT_TIME;
+   ENET_PROTOCOL_HEADER_SESSION_MASK      = 3 shl 12;
+   ENET_PROTOCOL_HEADER_SESSION_SHIFT     = 12;
+
 type
   ENetProtocolCommand = ( ENET_PROTOCOL_COMMAND_NONE,
                           ENET_PROTOCOL_COMMAND_ACKNOWLEDGE,
@@ -63,15 +72,9 @@ type
                           ENET_PROTOCOL_COMMAND_COUNT,
                           ENET_PROTOCOL_COMMAND_MASK = $0F                );
 
-  ENetProtocolFlag    = ( ENET_PROTOCOL_COMMAND_FLAG_ACKNOWLEDGE = 1 shl 7,
-                          ENET_PROTOCOL_COMMAND_FLAG_UNSEQUENCED = 1 shl 6,
-                          ENET_PROTOCOL_HEADER_FLAG_COMPRESSED   = 1 shl 14,
-                          ENET_PROTOCOL_HEADER_FLAG_SENT_TIME    = 1 shl 15,
-                          ENET_PROTOCOL_HEADER_FLAG_MASK         = ENET_PROTOCOL_HEADER_FLAG_COMPRESSED or Word( ENET_PROTOCOL_HEADER_FLAG_SENT_TIME ),
-                          ENET_PROTOCOL_HEADER_SESSION_MASK      = 3 shl 12,
-                          ENET_PROTOCOL_HEADER_SESSION_SHIFT     = 12        );
+  ENetProtocolFlag = Integer; //alias for FPC-uncompatible enum, placed in const
 
-{$ALIGN OFF}
+{$PACKRECORDS 1}
 
   pENetProtocolHeader = ^ENetProtocolHeader;
   ENetProtocolHeader = record
@@ -202,8 +205,9 @@ type
   11: (throttleConfigure : ENetProtocolThrottleConfigure);
   end;
 
-{$ALIGN ON}
+{$PACKRECORDS DEFAULT}
 
 implementation
 
 end.
+

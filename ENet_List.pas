@@ -3,14 +3,13 @@ unit ENet_List;
 {
   ENet - Reliable UDP networking library
 
-  Delphi 7 DLL header: ENet_List.pas
-  Copyright (c) 2014-2015 Dmitry D. Chernov aka Black Doomer
+  FreePascal DLL header: ENet_List.pas
+  Copyright (c) 2015 Dmitry D. Chernov aka Black Doomer
 
   Original file: list.h
   Copyright (c) 2002-2014 Lee Salzman
 
-  Version 1 for 1.3.12: 16.08.2014
-  Version 2 for 1.3.12: 10.02.2015
+  Version 1 for 1.3.12: 25.02.2015
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -34,6 +33,9 @@ unit ENet_List;
 interface
                                   
 type
+
+{$PACKRECORDS C}
+
   pENetListNode = ^ENetListNode;
   ENetListNode = record
     next     : pENetListNode;
@@ -47,43 +49,46 @@ type
     sentinel : ENetListNode;
   end;
 
+{$PACKRECORDS DEFAULT}
+
 //inline macros
-function enet_list_begin( list: pENetList ): ENetListIterator; // inline;
-function enet_list_end( list: pENetList ): ENetListIterator; // inline;
+function enet_list_begin( list: pENetList ): ENetListIterator; inline;
+function enet_list_end( list: pENetList ): ENetListIterator; inline;
 
-function enet_list_empty( list: pENetList ): Boolean; // inline;
+function enet_list_empty( list: pENetList ): Boolean; inline;
 
-function enet_list_next( iterator: ENetListIterator ): ENetListIterator; // inline;
-function enet_list_previous( iterator: ENetListIterator ): ENetListIterator; // inline;
+function enet_list_next( iterator: ENetListIterator ): ENetListIterator; inline;
+function enet_list_previous( iterator: ENetListIterator ): ENetListIterator; inline;
 
-function enet_list_front( list: pENetList ): Pointer; // inline;
-function enet_list_back( list: pENetList ): Pointer; // inline;
+function enet_list_front( list: pENetList ): Pointer; inline;
+function enet_list_back( list: pENetList ): Pointer; inline;
 
 implementation
 
-function enet_list_begin;
+function enet_list_begin( list: pENetList ): ENetListIterator; inline;
    begin Result := list^.sentinel.next;
      end;
-function enet_list_end;
+function enet_list_end( list: pENetList ): ENetListIterator; inline;
    begin Result := @( list^.sentinel );
      end;
 
-function enet_list_empty;
+function enet_list_empty( list: pENetList ): Boolean; inline;
    begin Result := enet_list_begin(list) = enet_list_end(list);
      end;
 
-function enet_list_next;
+function enet_list_next( iterator: ENetListIterator ): ENetListIterator; inline;
    begin Result := iterator^.next;
      end;
-function enet_list_previous;
+function enet_list_previous( iterator: ENetListIterator ): ENetListIterator; inline;
    begin Result := iterator^.previous;
      end;
 
-function enet_list_front;
+function enet_list_front( list: pENetList ): Pointer; inline;
    begin Result := Pointer( list^.sentinel.next );
      end;
-function enet_list_back;
+function enet_list_back( list: pENetList ): Pointer; inline;
    begin Result := Pointer( list^.sentinel.previous );
      end;
 
 end.
+

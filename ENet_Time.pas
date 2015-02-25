@@ -3,14 +3,13 @@ unit ENet_Time;
 {
   ENet - Reliable UDP networking library
 
-  Delphi 7 DLL header: ENet_Time.pas
-  Copyright (c) 2014-2015 Dmitry D. Chernov aka Black Doomer
+  FreePascal DLL header: ENet_Time.pas
+  Copyright (c) 2015 Dmitry D. Chernov aka Black Doomer
 
   Original file: time.h
   Copyright (c) 2002-2014 Lee Salzman
 
-  Version 1 for 1.3.12: 16.08.2014
-  Version 2 for 1.3.12: 10.02.2015
+  Version 1 for 1.3.12: 25.02.2015
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -37,32 +36,33 @@ const
   ENET_TIME_OVERFLOW = 86400000;
 
 //inline macros
-function ENET_TIME_LESS( const a, b: LongInt ): Boolean; // inline;
-function ENET_TIME_GREATER( const a, b: LongInt ): Boolean; // inline;
+function ENET_TIME_LESS( const a, b: LongInt ): Boolean; inline;
+function ENET_TIME_GREATER( const a, b: LongInt ): Boolean; inline;
 
-function ENET_TIME_LESS_EQUAL( const a, b: LongInt ): Boolean; // inline;
-function ENET_TIME_GREATER_EQUAL( const a, b: LongInt ): Boolean; // inline;
+function ENET_TIME_LESS_EQUAL( const a, b: LongInt ): Boolean; inline;
+function ENET_TIME_GREATER_EQUAL( const a, b: LongInt ): Boolean; inline;
 
-function ENET_TIME_DIFFERENCE( const a, b: LongInt ): LongInt; // inline;
+function ENET_TIME_DIFFERENCE( const a, b: LongInt ): LongInt; inline;
 
 implementation
 
-function ENET_TIME_LESS;
+function ENET_TIME_LESS( const a, b: LongInt ): Boolean; inline;
    begin Result := a - b >= ENET_TIME_OVERFLOW;
      end;
-function ENET_TIME_GREATER;
+function ENET_TIME_GREATER( const a, b: LongInt ): Boolean; inline;
    begin Result := b - a >= ENET_TIME_OVERFLOW;
      end;
 
-function ENET_TIME_LESS_EQUAL;
+function ENET_TIME_LESS_EQUAL( const a, b: LongInt ): Boolean; inline;
    begin Result := not ENET_TIME_GREATER( a, b );
      end;
-function ENET_TIME_GREATER_EQUAL;
+function ENET_TIME_GREATER_EQUAL( const a, b: LongInt ): Boolean; inline;
    begin Result := not ENET_TIME_LESS( a, b );
      end;
 
-function ENET_TIME_DIFFERENCE;
+function ENET_TIME_DIFFERENCE( const a, b: LongInt ): LongInt; inline;
    begin if a - b >= ENET_TIME_OVERFLOW then Result := b - a else Result := a - b;
      end;
 
 end.
+

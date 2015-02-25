@@ -3,14 +3,13 @@ unit ENet;
 {
   ENet - Reliable UDP networking library
 
-  Delphi 7 DLL header: ENet.pas
-  Copyright (c) 2014-2015 Dmitry D. Chernov aka Black Doomer
+  FreePascal DLL header: ENet.pas
+  Copyright (c) 2015 Dmitry D. Chernov aka Black Doomer
 
   Original file: enet.h
   Copyright (c) 2002-2014 Lee Salzman
 
-  Version 1 for 1.3.12: 16.08.2014
-  Version 2 for 1.3.12: 10.02.2015
+  Version 1 for 1.3.12: 25.02.2015
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +33,7 @@ unit ENet;
 interface
 
 uses
-  ENet_Win32, ENet_Types, ENet_Protocol, ENet_List, ENet_Callbacks;
+  ENet_Platform, ENet_Types, ENet_Protocol, ENet_List, ENet_Callbacks;
 
 const
   ENET_VERSION_MAJOR = 1;
@@ -137,6 +136,8 @@ type
   ENetPacketFreeCallback = procedure( packet: pENetPacket ); cdecl;
   ENetChecksumCallback = function( const buffers: pENetBuffer; bufferCount: enet_size_t ): enet_uint32; cdecl;
   ENetInterceptCallback = function( host: pENetHost; event: pENetEvent ): enet_int; cdecl;
+
+{$PACKRECORDS C}
 
   //structs
   ENetAddress = record
@@ -303,94 +304,100 @@ type
     packet    : pENetPacket;
   end;
 
+{$PACKRECORDS DEFAULT}
+
 //inline macros
-function ENET_VERSION_CREATE( const major, minor, patch: LongInt ): ENetVersion; // inline;
-function ENET_VERSION_GET_MAJOR( const version: ENetVersion ): LongInt; // inline;
-function ENET_VERSION_GET_MINOR( const version: ENetVersion ): LongInt; // inline;
-function ENET_VERSION_GET_PATCH( const version: ENetVersion ): LongInt; // inline;
-function ENET_VERSION(): ENetVersion; // inline;
+function ENET_VERSION_CREATE( const major, minor, patch: LongInt ): ENetVersion; inline;
+function ENET_VERSION_GET_MAJOR( const version: ENetVersion ): LongInt; inline;
+function ENET_VERSION_GET_MINOR( const version: ENetVersion ): LongInt; inline;
+function ENET_VERSION_GET_PATCH( const version: ENetVersion ): LongInt; inline;
+function ENET_VERSION(): ENetVersion; inline;
 
 //external
-function enet_initialize(): enet_int; cdecl; external libraryENet;
-function enet_initialize_with_callbacks( version: ENetVersion; const inits: pENetCallbacks ): enet_int; cdecl; external libraryENet;
-procedure enet_deinitialize(); cdecl; external libraryENet;
-function enet_linked_version(): ENetVersion; cdecl; external libraryENet;
+{$MACRO ON}
+{$DEFINE libraryENet := cdecl; external 'enet'}
 
-function enet_time_get(): enet_uint32; cdecl; external libraryENet;
-procedure enet_time_set( newTimeBase: enet_uint32 ); cdecl; external libraryENet;
+function enet_initialize(): enet_int; libraryENet;
+function enet_initialize_with_callbacks( version: ENetVersion; const inits: pENetCallbacks ): enet_int; libraryENet;
+procedure enet_deinitialize(); libraryENet;
+function enet_linked_version(): ENetVersion; libraryENet;
 
-function enet_socket_create( kind: ENetSocketType ): ENetSocket; cdecl; external libraryENet;
-function enet_socket_bind( socket: ENetSocket; const address: pENetAddress ): enet_int; cdecl; external libraryENet;
-function enet_socket_get_address( socket: ENetSocket; address: pENetAddress ): enet_int; cdecl; external libraryENet;
-function enet_socket_listen( socket: ENetSocket; backlog: enet_int ): enet_int; cdecl; external libraryENet;
-function enet_socket_accept( socket: ENetSocket; address: pENetAddress ): ENetSocket; cdecl; external libraryENet;
-function enet_socket_connect( socket: ENetSocket; const address: pENetAddress ): enet_int; cdecl; external libraryENet;
-function enet_socket_send( socket: ENetSocket; const address: pENetAddress; const buffers: pENetBuffer; bufferCount: enet_size_t ): enet_int; cdecl; external libraryENet;
-function enet_socket_receive( socket: ENetSocket; address: pENetAddress; buffers: pENetBuffer; bufferCount: enet_size_t ): enet_int; cdecl; external libraryENet;
-function enet_socket_wait( socket: ENetSocket; condition: penet_uint32; timeout: enet_uint32 ): enet_int; cdecl; external libraryENet;
-function enet_socket_set_option( socket: ENetSocket; option: ENetSocketOption; value: enet_int ): enet_int; cdecl; external libraryENet;
-function enet_socket_get_option( socket: ENetSocket; option: ENetSocketOption; value: penet_int ): enet_int; cdecl; external libraryENet;
-function enet_socket_shutdown( socket: ENetSocket; how: ENetSocketShutdown ): enet_int; cdecl; external libraryENet;
-procedure enet_socket_destroy( socket: ENetSocket ); cdecl; external libraryENet;
-function enet_socketset_select( maxSocket: ENetSocket; readSet: pENetSocketSet; writeSet: pENetSocketSet; timeout: enet_uint32 ): enet_int; cdecl; external libraryENet;
+function enet_time_get(): enet_uint32; libraryENet;
+procedure enet_time_set( newTimeBase: enet_uint32 ); libraryENet;
 
-function enet_address_set_host( address: pENetAddress; const hostName: PChar ): enet_int; cdecl; external libraryENet;
-function enet_address_get_host_ip( const address: pENetAddress; hostName: PChar; nameLength: enet_size_t ): enet_int; cdecl; external libraryENet;
-function enet_address_get_host( const address: pENetAddress; hostName: PChar; nameLength: enet_size_t ): enet_int; cdecl; external libraryENet;
+function enet_socket_create( kind: ENetSocketType ): ENetSocket; libraryENet;
+function enet_socket_bind( socket: ENetSocket; const address: pENetAddress ): enet_int; libraryENet;
+function enet_socket_get_address( socket: ENetSocket; address: pENetAddress ): enet_int; libraryENet;
+function enet_socket_listen( socket: ENetSocket; backlog: enet_int ): enet_int; libraryENet;
+function enet_socket_accept( socket: ENetSocket; address: pENetAddress ): ENetSocket; libraryENet;
+function enet_socket_connect( socket: ENetSocket; const address: pENetAddress ): enet_int; libraryENet;
+function enet_socket_send( socket: ENetSocket; const address: pENetAddress; const buffers: pENetBuffer; bufferCount: enet_size_t ): enet_int; libraryENet;
+function enet_socket_receive( socket: ENetSocket; address: pENetAddress; buffers: pENetBuffer; bufferCount: enet_size_t ): enet_int; libraryENet;
+function enet_socket_wait( socket: ENetSocket; condition: penet_uint32; timeout: enet_uint32 ): enet_int; libraryENet;
+function enet_socket_set_option( socket: ENetSocket; option: ENetSocketOption; value: enet_int ): enet_int; libraryENet;
+function enet_socket_get_option( socket: ENetSocket; option: ENetSocketOption; value: penet_int ): enet_int; libraryENet;
+function enet_socket_shutdown( socket: ENetSocket; how: ENetSocketShutdown ): enet_int; libraryENet;
+procedure enet_socket_destroy( socket: ENetSocket ); libraryENet;
+function enet_socketset_select( maxSocket: ENetSocket; readSet: pENetSocketSet; writeSet: pENetSocketSet; timeout: enet_uint32 ): enet_int; libraryENet;
 
-function enet_packet_create( const data: Pointer; dataLength: enet_size_t; flags: enet_uint32 ): pENetPacket; cdecl; external libraryENet;
-procedure enet_packet_destroy( packet: pENetPacket ); cdecl; external libraryENet;
-function enet_packet_resize( packet: pENetPacket; dataLength: enet_size_t ): enet_int; cdecl; external libraryENet;
-function enet_crc32( const buffers: pENetBuffer; bufferCount: enet_size_t ): enet_uint32; cdecl; external libraryENet;
+function enet_address_set_host( address: pENetAddress; const hostName: PChar ): enet_int; libraryENet;
+function enet_address_get_host_ip( const address: pENetAddress; hostName: PChar; nameLength: enet_size_t ): enet_int; libraryENet;
+function enet_address_get_host( const address: pENetAddress; hostName: PChar; nameLength: enet_size_t ): enet_int; libraryENet;
 
-function enet_host_create( const address: pENetAddress; peerCount, channelLimit: enet_size_t; incomingBandwidth, outgoingBandwidth: enet_uint32 ): pENetHost; cdecl; external libraryENet;
-procedure enet_host_destroy( host: pENetHost ); cdecl; external libraryENet;
-function enet_host_connect( host: pENetHost; const address: pENetAddress; channelCount: enet_size_t; data: enet_uint32 ): pENetPeer; cdecl; external libraryENet;
-function enet_host_check_events( host: pENetHost; event: pENetEvent ): enet_int; cdecl; external libraryENet;
-function enet_host_service( host: pENetHost; event: pENetEvent; timeout: enet_uint32 ): enet_int; cdecl; external libraryENet;
-procedure enet_host_flush( host: pENetHost ); cdecl; external libraryENet;
-procedure enet_host_widecast( host: pENetHost; channelID: enet_uint8; packet: pENetPacket ); cdecl; external libraryENet name 'enet_host_broadcast'; //renamed due to names conflict
-procedure enet_host_compress( host: pENetHost; const compressor: pENetCompressor ); cdecl; external libraryENet;
-function enet_host_compress_with_range_coder( host: pENetHost ): enet_int; cdecl; external libraryENet;
-procedure enet_host_channel_limit( host: pENetHost; channelLimit: enet_size_t ); cdecl; external libraryENet;
-procedure enet_host_bandwidth_limit( host: pENetHost; incomingBandwidth, outgoingBandwidth: enet_uint32 ); cdecl; external libraryENet;
+function enet_packet_create( const data: Pointer; dataLength: enet_size_t; flags: enet_uint32 ): pENetPacket; libraryENet;
+procedure enet_packet_destroy( packet: pENetPacket ); libraryENet;
+function enet_packet_resize( packet: pENetPacket; dataLength: enet_size_t ): enet_int; libraryENet;
+function enet_crc32( const buffers: pENetBuffer; bufferCount: enet_size_t ): enet_uint32; libraryENet;
 
-function enet_peer_send( peer: pENetPeer; channelID: enet_uint8; packet: pENetPacket ): enet_int; cdecl; external libraryENet;
-function enet_peer_receive( peer: pENetPeer; channelID: penet_uint8 ): pENetPacket; cdecl; external libraryENet;
-procedure enet_peer_ping( peer: pENetPeer ); cdecl; external libraryENet;
-procedure enet_peer_ping_frequency( peer: pENetPeer; pingInterval: enet_uint32 ); cdecl; external libraryENet name 'enet_peer_ping_interval'; //renamed due to names conflict
-procedure enet_peer_timeout( peer: pENetPeer; timeoutLimit, timeoutMinimum, timeoutMaximum: enet_uint32 ); cdecl; external libraryENet;
-procedure enet_peer_reset( peer: pENetPeer ); cdecl; external libraryENet;
-procedure enet_peer_disconnect( peer: pENetPeer; data: enet_uint32 ); cdecl; external libraryENet;
-procedure enet_peer_disconnect_now( peer: pENetPeer; data: enet_uint32 ); cdecl; external libraryENet;
-procedure enet_peer_disconnect_later( peer: pENetPeer; data: enet_uint32 ); cdecl; external libraryENet;
-procedure enet_peer_throttle_configure( peer: pENetPeer; interval, acceleration, deceleration: enet_uint32 ); cdecl; external libraryENet;
+function enet_host_create( const address: pENetAddress; peerCount, channelLimit: enet_size_t; incomingBandwidth, outgoingBandwidth: enet_uint32 ): pENetHost; libraryENet;
+procedure enet_host_destroy( host: pENetHost ); libraryENet;
+function enet_host_connect( host: pENetHost; const address: pENetAddress; channelCount: enet_size_t; data: enet_uint32 ): pENetPeer; libraryENet;
+function enet_host_check_events( host: pENetHost; event: pENetEvent ): enet_int; libraryENet;
+function enet_host_service( host: pENetHost; event: pENetEvent; timeout: enet_uint32 ): enet_int; libraryENet;
+procedure enet_host_flush( host: pENetHost ); libraryENet;
+procedure enet_host_widecast( host: pENetHost; channelID: enet_uint8; packet: pENetPacket ); libraryENet name 'enet_host_broadcast'; //renamed due to names conflict
+procedure enet_host_compress( host: pENetHost; const compressor: pENetCompressor ); libraryENet;
+function enet_host_compress_with_range_coder( host: pENetHost ): enet_int; libraryENet;
+procedure enet_host_channel_limit( host: pENetHost; channelLimit: enet_size_t ); libraryENet;
+procedure enet_host_bandwidth_limit( host: pENetHost; incomingBandwidth, outgoingBandwidth: enet_uint32 ); libraryENet;
 
-function enet_range_coder_create(): Pointer; cdecl; external libraryENet;
-procedure enet_range_coder_destroy( context: Pointer ); cdecl; external libraryENet;
-function enet_range_coder_compress( context: Pointer; const inBuffers: pENetBuffer; inBufferCount, inLiit: enet_size_t; outData: penet_uint8; outLimit: enet_size_t ): enet_size_t; cdecl; external libraryENet;
-function enet_range_coder_decompress( context: Pointer; const inData: penet_uint8; inLimit: enet_size_t; outData: penet_uint8; outLimit: enet_size_t ): enet_size_t; cdecl; external libraryENet;
+function enet_peer_send( peer: pENetPeer; channelID: enet_uint8; packet: pENetPacket ): enet_int; libraryENet;
+function enet_peer_receive( peer: pENetPeer; channelID: penet_uint8 ): pENetPacket; libraryENet;
+procedure enet_peer_ping( peer: pENetPeer ); libraryENet;
+procedure enet_peer_ping_frequency( peer: pENetPeer; pingInterval: enet_uint32 ); libraryENet name 'enet_peer_ping_interval'; //renamed due to names conflict
+procedure enet_peer_timeout( peer: pENetPeer; timeoutLimit, timeoutMinimum, timeoutMaximum: enet_uint32 ); libraryENet;
+procedure enet_peer_reset( peer: pENetPeer ); libraryENet;
+procedure enet_peer_disconnect( peer: pENetPeer; data: enet_uint32 ); libraryENet;
+procedure enet_peer_disconnect_now( peer: pENetPeer; data: enet_uint32 ); libraryENet;
+procedure enet_peer_disconnect_later( peer: pENetPeer; data: enet_uint32 ); libraryENet;
+procedure enet_peer_throttle_configure( peer: pENetPeer; interval, acceleration, deceleration: enet_uint32 ); libraryENet;
+
+function enet_range_coder_create(): Pointer; libraryENet;
+procedure enet_range_coder_destroy( context: Pointer ); libraryENet;
+function enet_range_coder_compress( context: Pointer; const inBuffers: pENetBuffer; inBufferCount, inLiit: enet_size_t; outData: penet_uint8; outLimit: enet_size_t ): enet_size_t; libraryENet;
+function enet_range_coder_decompress( context: Pointer; const inData: penet_uint8; inLimit: enet_size_t; outData: penet_uint8; outLimit: enet_size_t ): enet_size_t; libraryENet;
 
 implementation
 
-function ENET_VERSION_CREATE;
+function ENET_VERSION_CREATE( const major, minor, patch: LongInt ): ENetVersion; inline;
    begin Result := (major shl 16) or (minor shl 8) or patch;
      end;
 
-function ENET_VERSION_GET_MAJOR;
+function ENET_VERSION_GET_MAJOR( const version: ENetVersion ): LongInt; inline;
    begin Result := (version shr 16) and $FF;
      end;
 
-function ENET_VERSION_GET_MINOR;
+function ENET_VERSION_GET_MINOR( const version: ENetVersion ): LongInt; inline;
    begin Result := (version shr 8) and $FF;
      end;
 
-function ENET_VERSION_GET_PATCH;
+function ENET_VERSION_GET_PATCH( const version: ENetVersion ): LongInt; inline;
    begin Result := version and $FF;
      end;
 
-function ENET_VERSION;
+function ENET_VERSION(): ENetVersion; inline;
    begin Result := ENET_VERSION_CREATE( ENET_VERSION_MAJOR, ENET_VERSION_MINOR, ENET_VERSION_PATCH );
      end;
 
 end.
+

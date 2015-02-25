@@ -3,13 +3,13 @@ unit ENet_Callbacks;
 {
   ENet - Reliable UDP networking library
 
-  Delphi 7 DLL header: ENet_Callbacks.pas
-  Copyright (c) 2014 Dmitry D. Chernov aka Black Doomer
+  FreePascal DLL header: ENet_Callbacks.pas
+  Copyright (c) 2015 Dmitry D. Chernov aka Black Doomer
 
   Original file: callbacks.h
   Copyright (c) 2002-2014 Lee Salzman
 
-  Version 1 for 1.3.12: 16.08.2014
+  Version 1 for 1.3.12: 25.02.2015
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -35,6 +35,9 @@ interface
 uses ENet_Types; //only for size_t
 
 type
+
+{$PACKRECORDS C}
+
   pENetCallbacks = ^ENetCallbacks;
   ENetCallbacks = record
     malloc    : function( size: enet_size_t ): Pointer; cdecl;
@@ -42,6 +45,9 @@ type
     no_memory : procedure(); cdecl;
   end;
 
+{$PACKRECORDS DEFAULT}
+
 implementation
 
 end.
+
