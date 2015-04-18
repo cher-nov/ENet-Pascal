@@ -1,9 +1,10 @@
-unit ENet_Protocol;
+{$mode objfpc}
+unit enetprotocol;
 
 {
   ENet - Reliable UDP networking library
 
-  FreePascal DLL header: ENet_Protocol.pas
+  FreePascal DLL header: enetprotocol.pp
   Copyright (c) 2015 Dmitry D. Chernov aka Black Doomer
 
   Original file: protocol.h
@@ -32,7 +33,7 @@ unit ENet_Protocol;
 
 interface
 
-uses ENet_Types;
+uses enettypes;
 
 const
    ENET_PROTOCOL_MINIMUM_MTU             = 576;
@@ -188,8 +189,8 @@ type
     fragmentOffset      : enet_uint32;
   end;
 
-  pENetProtocol = ^ENetProtocol;
-  ENetProtocol = record //union
+  pENetProtocol = ^TENetProtocol;
+  TENetProtocol = record //union
   case Byte of
   0 : (header            : ENetProtocolCommandHeader);
   1 : (acknowledge       : ENetProtocolAcknowledge);

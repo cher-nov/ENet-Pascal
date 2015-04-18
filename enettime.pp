@@ -1,9 +1,10 @@
-unit ENet_Time;
+{$mode objfpc}
+unit enettime;
 
 {
   ENet - Reliable UDP networking library
 
-  FreePascal DLL header: ENet_Time.pas
+  FreePascal DLL header: enettime.pp
   Copyright (c) 2015 Dmitry D. Chernov aka Black Doomer
 
   Original file: time.h

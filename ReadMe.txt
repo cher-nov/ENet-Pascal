@@ -7,17 +7,6 @@ DISTRIBUTED UNDER TERMS AND CONDITIONS OF ORIGINAL LICENSE OF USED ENET VERSION
 2015
 
 ================================================================================
-LIST OF TRANSLATED FILES AND THEIR ANCESTORS:
-
-ENet.pas            <=> enet.h
-ENet_Types.pas      <=> types.h
-ENet_Protocol.pas   <=> protocol.h
-ENet_Callbacks.pas  <=> callbacks.h
-ENet_List.pas       <=> list.h
-ENet_Time.pas       <=> time.h
-ENet_Platform.pas   <=> win32.h & unix.h
-
-================================================================================
 LIST OF FILES THAT WERE NOT TRANSLATED:
 
 utility.h  - because ENET_MIN and ENET_MAX functions have analogues in Math unit
@@ -55,5 +44,3 @@ Dmitry V. Merkulov aka PrimuS aka Prostovitalik aka fgsfds aka Smokepuff
  - that amazing guy from Doom2D.org Community for whom I created Delphi 7
    headers, who compiled enet.dll (included) and who created long-awaited
    multiplayer in Doom 2D: Forever, based on ENet.
-
-// 25.02.2015 (d.m.y) UTC+10 //

@@ -1,9 +1,10 @@
-unit ENet_List;
+{$mode objfpc}{$H+}
+unit enetlist;
 
 {
   ENet - Reliable UDP networking library
 
-  FreePascal DLL header: ENet_List.pas
+  FreePascal DLL header: enetlist.pp
   Copyright (c) 2015 Dmitry D. Chernov aka Black Doomer
 
   Original file: list.h
@@ -44,8 +45,8 @@ type
 
   ENetListIterator = pENetListNode;
 
-  pENetList = ^ENetList;
-  ENetList = record
+  pENetList = ^TENetList;
+  TENetList = record
     sentinel : ENetListNode;
   end;
 

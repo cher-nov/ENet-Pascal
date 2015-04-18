@@ -1,12 +1,13 @@
-unit ENet_Callbacks;
+{$mode objfpc}
+unit enettypes;
 
 {
   ENet - Reliable UDP networking library
 
-  FreePascal DLL header: ENet_Callbacks.pas
+  FreePascal DLL header: enettypes.pp
   Copyright (c) 2015 Dmitry D. Chernov aka Black Doomer
 
-  Original file: callbacks.h
+  Original file: types.h
   Copyright (c) 2002-2014 Lee Salzman
 
   Version 1 for 1.3.12: 25.02.2015
@@ -32,20 +33,21 @@ unit ENet_Callbacks;
 
 interface
 
-uses ENet_Types; //only for size_t
-
 type
+  enet_size_t = SizeUInt; //alias for C size_t
+  penet_size_t = ^enet_size_t;
 
-{$PACKRECORDS C}
+  enet_int = LongInt; //alias for C int
+  penet_int = ^enet_int;
 
-  pENetCallbacks = ^ENetCallbacks;
-  ENetCallbacks = record
-    malloc    : function( size: enet_size_t ): Pointer; cdecl;
-    free      : procedure( memory: Pointer ); cdecl;
-    no_memory : procedure(); cdecl;
-  end;
+  enet_uint8 = Byte;
+  penet_uint8 = ^enet_uint8;
 
-{$PACKRECORDS DEFAULT}
+  enet_uint16 = Word;
+  penet_uint16 = ^enet_uint16;
+
+  enet_uint32 = LongWord;
+  penet_uint32 = ^enet_uint32;
 
 implementation
 

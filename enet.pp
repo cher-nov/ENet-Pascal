@@ -1,9 +1,11 @@
-unit ENet;
+{$mode objfpc}
+unit enet;
+
 
 {
   ENet - Reliable UDP networking library
 
-  FreePascal DLL header: ENet.pas
+  FreePascal DLL header: enet.pp
   Copyright (c) 2015 Dmitry D. Chernov aka Black Doomer
 
   Original file: enet.h
@@ -33,7 +35,7 @@ unit ENet;
 interface
 
 uses
-  ENet_Platform, ENet_Types, ENet_Protocol, ENet_List, ENet_Callbacks;
+  enetplatform, enettypes, enetprotocol, enetlist, enetcallbacks;
 
 const
   ENET_VERSION_MAJOR = 1;
@@ -95,12 +97,14 @@ type
                           ENET_SOCKET_SHUTDOWN_WRITE,
                           ENET_SOCKET_SHUTDOWN_READ_WRITE );
 
-  ENetPacketFlag      = ( ENET_PACKET_FLAG_RELIABLE            = 1,
-                          ENET_PACKET_FLAG_UNSEQUENCED         = 2,
-                          ENET_PACKET_FLAG_NO_ALLOCATE         = 4,
-                          ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT = 8,
-                          ENET_PACKET_FLAG_SENT                = 256 );
+Const
+  ENET_PACKET_FLAG_RELIABLE            = 1;
+  ENET_PACKET_FLAG_UNSEQUENCED         = 2;
+  ENET_PACKET_FLAG_NO_ALLOCATE         = 4;
+  ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT = 8;
+  ENET_PACKET_FLAG_SENT                = 256; 
 
+Type
   ENetPeerState       = ( ENET_PEER_STATE_DISCONNECTED,
                           ENET_PEER_STATE_CONNECTING,
                           ENET_PEER_STATE_ACKNOWLEDGING_CONNECT,
@@ -155,7 +159,7 @@ type
   ENetAcknowledgement = record
     acknowledgementList : ENetListNode;
     sentTime            : enet_uint32;
-    command             : ENetProtocol;
+    command             : TENetProtocol;
   end;
   ENetOutgoingCommand = record
     outgoingCommandList      : ENetListNode;
@@ -167,14 +171,14 @@ type
     fragmentOffset           : enet_uint32;
     fragmentLength           : enet_uint16;
     sendAttempts             : enet_uint16;
-    command                  : ENetProtocol;
+    command                  : TENetProtocol;
     packet                   : pENetPacket;
   end;
   ENetIncomingCommand = record
     incomingCommandList      : ENetListNode;
     reliableSequenceNumber   : enet_uint16;
     unreliableSequenceNumber : enet_uint16;
-    command                  : ENetProtocol;
+    command                  : TENetProtocol;
     fragmentCount            : enet_uint32;
     fragmentsRemaining       : enet_uint32;
     fragments                : penet_uint32;
@@ -187,8 +191,8 @@ type
     reliableWindows                  : array[ 0..ENET_PEER_RELIABLE_WINDOWS-1 ] of enet_uint16;
     incomingReliableSequenceNumber   : enet_uint16;
     incomingUnreliableSequenceNumber : enet_uint16;
-    incomingReliableCommands         : ENetList;
-    incomingUnreliableCommands       : ENetList;
+    incomingReliableCommands         : TENetList;
+    incomingUnreliableCommands       : TENetList;
   end;
   ENetPeer = record
     dispatchList                   : ENetListNode;
@@ -239,12 +243,12 @@ type
     windowSize                     : enet_uint32;
     reliableDataInTransit          : enet_uint32;
     outgoingReliableSequenceNumber : enet_uint16;
-    acknowledgements               : ENetList;
-    sentReliableCommands           : ENetList;
-    sentUnreliableCommands         : ENetList;
-    outgoingReliableCommands       : ENetList;
-    outgoingUnreliableCommands     : ENetList;
-    dispatchedCommands             : ENetList;
+    acknowledgements               : TENetList;
+    sentReliableCommands           : TENetList;
+    sentUnreliableCommands         : TENetList;
+    outgoingReliableCommands       : TENetList;
+    outgoingUnreliableCommands     : TENetList;
+    dispatchedCommands             : TENetList;
     needsDispatch                  : enet_int;
     incomingUnsequencedGroup       : enet_uint16;
     outgoingUnsequencedGroup       : enet_uint16;
@@ -271,11 +275,11 @@ type
     peerCount                  : enet_size_t;
     channelLimit               : enet_size_t;
     serviceTime                : enet_uint32;
-    dispatchQueue              : ENetList;
+    dispatchQueue              : TENetList;
     continueSending            : enet_int;
     packetSize                 : enet_size_t;
     headerFlags                : enet_uint16;
-    commands                   : array[ 0..ENET_PROTOCOL_MAXIMUM_PACKET_COMMANDS-1 ] of ENetProtocol;
+    commands                   : array[ 0..ENET_PROTOCOL_MAXIMUM_PACKET_COMMANDS-1 ] of TENetProtocol;
     commandCount               : enet_size_t;
     buffers                    : array[ 0..ENET_BUFFER_MAXIMUM-1 ] of ENetBuffer;
     bufferCount                : enet_size_t;

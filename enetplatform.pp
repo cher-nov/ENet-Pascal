@@ -1,9 +1,10 @@
-unit ENet_Platform;
+{$mode objfpc}{$H+}
+unit enetplatform;
 
 {
   ENet - Reliable UDP networking library
 
-  FreePascal DLL header: ENet_Platform.pas
+  FreePascal DLL header: enetplatform
   Copyright (c) 2015 Dmitry D. Chernov aka Black Doomer
 
   Original files: win32.h & unix.h
@@ -32,12 +33,12 @@ unit ENet_Platform;
 
 interface
 
-uses ENet_Types, //ENet_Types used only for size_t
+uses enettypes, // used only for size_t
      {$IFDEF MSWINDOWS} WinSock2 {$ELSE} BaseUnix, Sockets {$ENDIF};
 
 const
   ENET_SOCKET_NULL = {$IFDEF MSWINDOWS} INVALID_SOCKET; {$ELSE} -1; {$ENDIF}
-  ENET_BUFFER_MAXIMUM = MSG_MAXIOVLEN; //is it forgotten in win32.h ?
+//  ENET_BUFFER_MAXIMUM = MSG_MAXIOVLEN; //is it forgotten in win32.h ?
 
 type
   ENetSocket = {$IFDEF MSWINDOWS} TSocket {$ELSE} enet_int {$ENDIF};
@@ -89,13 +90,13 @@ function ENET_NET_TO_HOST_32( const value: LongWord ): LongWord; inline;
      end;
 
 procedure ENET_SOCKETSET_EMPTY( var sockset: ENetSocketSet ); inline;
-    begin {$IFNDEF MSWINDOWS}fp{$ENDIF}FD_ZERO( sockset );
+    begin {$IFNDEF MSWINDOWS}fpFD_ZERO{$ELSE}FD_ZERO{$ENDIF}( sockset );
       end;
 procedure ENET_SOCKETSET_ADD( var sockset: ENetSocketSet; socket: ENetSocket ); inline;
-    begin {$IFNDEF MSWINDOWS}fp{$ENDIF}FD_SET( socket, sockset );
+    begin {$IFNDEF MSWINDOWS}fpFD_SET{$ELSE}FD_SET{$ENDIF}( socket, sockset );
       end;
 procedure ENET_SOCKETSET_REMOVE( var sockset: ENetSocketSet; socket: ENetSocket ); inline;
-    begin {$IFNDEF MSWINDOWS}fp{$ENDIF}FD_CLR( socket, sockset );
+    begin {$IFNDEF MSWINDOWS}fpFD_CLR{$ELSE}FD_CLR{$ENDIF}( socket, sockset );
       end;
 
 function ENET_SOCKETSET_CHECK( var sockset: ENetSocketSet; socket: ENetSocket ): Boolean; inline;
