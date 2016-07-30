@@ -11,6 +11,7 @@ unit enettime;
   Copyright (c) 2002-2014 Lee Salzman
 
   Version 1 for 1.3.12: 25.02.2015
+  Version 2 for 1.3.13: 31.07.2016
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal

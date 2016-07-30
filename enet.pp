@@ -1,7 +1,6 @@
 {$mode objfpc}
 unit enet;
 
-
 {
   ENet - Reliable UDP networking library
 
@@ -12,6 +11,7 @@ unit enet;
   Copyright (c) 2002-2014 Lee Salzman
 
   Version 1 for 1.3.12: 25.02.2015
+  Version 2 for 1.3.13: 31.07.2016
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -40,7 +40,7 @@ uses
 const
   ENET_VERSION_MAJOR = 1;
   ENET_VERSION_MINOR = 3;
-  ENET_VERSION_PATCH = 12;
+  ENET_VERSION_PATCH = 13;
 
   ENET_HOST_ANY       = 0;
   ENET_HOST_BROADCAST : LongWord = $FFFFFFFF;
