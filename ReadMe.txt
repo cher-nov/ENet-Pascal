@@ -2,6 +2,7 @@ ENet - Reliable UDP networking library
 DLL include files (headers) for Free Pascal
 Version 1 for 1.3.12: 2015-02-25 (based on Delphi 7 headers, version 2)
 Version 2 for 1.3.13: 2016-07-31
+Version 3 for 1.3.13: 2016-08-24
 
 Copyright (c) Dmitry D. Chernov aka Black Doomer (blackdoomer@yandex.ru)
 DISTRIBUTED UNDER TERMS AND CONDITIONS OF ORIGINAL LICENSE OF USED ENET VERSION
@@ -16,15 +17,15 @@ utility.h - because ENET_MIN and ENET_MAX functions have their analogues in the
 ===============================================================================
 LIST OF RENAMED IDENTIFIERS DUE TO NAMES CONFLICTS:
 
-enet_host_broadcast()      >>>  enet_host_widecast()
-enet_peer_ping_interval()  >>>  enet_peer_ping_frequency()
-ENetEvent.type             >>>  ENetEvent.kind
+ENET_HOST_BROADCAST      >>>  ENET_HOST_BROADCAST_
+ENET_PEER_PING_INTERVAL  >>>  ENET_PEER_PING_INTERVAL_
+ENetEvent.type           >>>  ENetEvent.kind
 
 ===============================================================================
 THANKS TO:
 
 Doom2D.org Community (www.doom2d.org)
- - because ENet headers were fistly translated for Delphi 7 to use ENet in
+ - because ENet headers were firstly translated for Delphi 7 to use ENet in
    their project, Doom 2D: Forever.
 
 daniel_p
