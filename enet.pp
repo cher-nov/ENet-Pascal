@@ -360,11 +360,7 @@ const
   ENET_HOST_BROADCAST_ : LongWord = $FFFFFFFF; //"_" due to name conflict
   ENET_PORT_ANY       = 0;
 
-{$IFDEF WINDOWS}
   ENET_BUFFER_MAXIMUM = 1 + 2 * ENET_PROTOCOL_MAXIMUM_PACKET_COMMANDS;
-{$ELSE}
-  ENET_BUFFER_MAXIMUM = MSG_MAXIOVLEN; //unix.h
-{$ENDIF}
 
   { unnamed enums }
   ENET_HOST_RECEIVE_BUFFER_SIZE          = 256 * 1024;
