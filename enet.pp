@@ -36,6 +36,7 @@ unit ENet;
 interface
 
 uses
+  ctypes,
 {$IFDEF WINDOWS}
   WinSock2;
 {$ELSE}
@@ -43,28 +44,17 @@ uses
 {$ENDIF}
 
 ////////////////////////////////////////////////////////////////////////////////
-// general
-////////////////////////////////////////////////////////////////////////////////
-
-type
-  enet_size_t = SizeUInt; //alias for C size_t
-  penet_size_t = ^enet_size_t;
-
-  enet_int = Integer; //alias for C int
-  penet_int = ^enet_int;
-
-////////////////////////////////////////////////////////////////////////////////
 // types.h
 ////////////////////////////////////////////////////////////////////////////////
 
 type
-  enet_uint8 = Byte;
+  enet_uint8 = cuchar;
   penet_uint8 = ^enet_uint8;
 
-  enet_uint16 = Word;
+  enet_uint16 = cushort;
   penet_uint16 = ^enet_uint16;
 
-  enet_uint32 = LongWord;
+  enet_uint32 = cuint;  // TODO: why 'int' instead of 'long'?
   penet_uint32 = ^enet_uint32;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -74,7 +64,7 @@ type
 type
   pENetCallbacks = ^TENetCallbacks;
   TENetCallbacks = record
-    malloc    : function( size: enet_size_t ): Pointer; cdecl;
+    malloc    : function( size: csize_t ): Pointer; cdecl;
     free      : procedure( memory: Pointer ); cdecl;
     no_memory : procedure(); cdecl;
   end;
@@ -268,7 +258,7 @@ type
 {$IFDEF WINDOWS}
   ENetSocket = TSocket;
 {$ELSE}
-  ENetSocket = enet_int;
+  ENetSocket = cint;
 {$ENDIF}
 
   ENetSocketSet = TFDSet;
@@ -277,26 +267,26 @@ type
   pENetBuffer = ^ENetBuffer;
   ENetBuffer = record
   {$IFDEF WINDOWS}
-    dataLength : enet_size_t;
+    dataLength : csize_t;
     data       : Pointer;
   {$ELSE}
     data       : Pointer;
-    dataLength : enet_size_t;
+    dataLength : csize_t;
   {$ENDIF}
   end;
 
 { inline macros }
 
-function ENET_HOST_TO_NET_16( value: Word ): Word; inline;
-function ENET_HOST_TO_NET_32( value: LongWord ): LongWord; inline;
+function ENET_HOST_TO_NET_16( value: cuint16 ): cuint16; inline;
+function ENET_HOST_TO_NET_32( value: cuint32 ): cuint32; inline;
 
-function ENET_NET_TO_HOST_16( value: Word ): Word; inline;
-function ENET_NET_TO_HOST_32( value: LongWord ): LongWord; inline;
+function ENET_NET_TO_HOST_16( value: cuint16 ): cuint16; inline;
+function ENET_NET_TO_HOST_32( value: cuint32 ): cuint32; inline;
 
 procedure ENET_SOCKETSET_EMPTY( var sockset: ENetSocketSet ); inline;
 procedure ENET_SOCKETSET_ADD( var sockset: ENetSocketSet; socket: ENetSocket ); inline;
 procedure ENET_SOCKETSET_REMOVE( var sockset: ENetSocketSet; socket: ENetSocket ); inline;
-function ENET_SOCKETSET_CHECK( var sockset: ENetSocketSet; socket: ENetSocket ): Boolean; inline;
+function ENET_SOCKETSET_CHECK( var sockset: ENetSocketSet; socket: ENetSocket ): cbool; inline;
 
 ////////////////////////////////////////////////////////////////////////////////
 // list.h
@@ -336,13 +326,13 @@ const
   ENET_TIME_OVERFLOW = 86400000;
 
 { inline macros }
-function ENET_TIME_LESS( const a, b: Cardinal ): Boolean; inline;
-function ENET_TIME_GREATER( const a, b: Cardinal ): Boolean; inline;
+function ENET_TIME_LESS( const a, b: cint ): cbool; inline;
+function ENET_TIME_GREATER( const a, b: cint ): cbool; inline;
 
-function ENET_TIME_LESS_EQUAL( const a, b: Cardinal ): Boolean; inline;
-function ENET_TIME_GREATER_EQUAL( const a, b: Cardinal ): Boolean; inline;
+function ENET_TIME_LESS_EQUAL( const a, b: cint ): cbool; inline;
+function ENET_TIME_GREATER_EQUAL( const a, b: cint ): cbool; inline;
 
-function ENET_TIME_DIFFERENCE( const a, b: Cardinal ): Integer; inline;
+function ENET_TIME_DIFFERENCE( const a, b: cint ): cint; inline;
 
 ////////////////////////////////////////////////////////////////////////////////
 // enet.h
@@ -357,7 +347,7 @@ const
   ENET_VERSION_PATCH = 13;
 
   ENET_HOST_ANY       = 0;
-  ENET_HOST_BROADCAST_ : LongWord = $FFFFFFFF; //"_" due to name conflict
+  ENET_HOST_BROADCAST_ = $FFFFFFFF;  // "_" due to name conflict
   ENET_PORT_ANY       = 0;
 
   ENET_BUFFER_MAXIMUM = 1 + 2 * ENET_PROTOCOL_MAXIMUM_PACKET_COMMANDS;
@@ -383,7 +373,7 @@ const
   ENET_PEER_TIMEOUT_LIMIT                = 32;
   ENET_PEER_TIMEOUT_MINIMUM              = 5000;
   ENET_PEER_TIMEOUT_MAXIMUM              = 30000;
-  ENET_PEER_PING_INTERVAL_               = 500; //"_" due to name conflict
+  ENET_PEER_PING_INTERVAL_               = 500;  // "_" due to name conflict
   ENET_PEER_UNSEQUENCED_WINDOWS          = 64;
   ENET_PEER_UNSEQUENCED_WINDOW_SIZE      = 1024;
   ENET_PEER_FREE_UNSEQUENCED_WINDOWS     = 32;
@@ -454,9 +444,9 @@ type
   { callbacks }
   ENetPacketFreeCallback = procedure( packet: pENetPacket ); cdecl;
   ENetChecksumCallback = function( const buffers: pENetBuffer;
-    bufferCount: enet_size_t ): enet_uint32; cdecl;
+    bufferCount: csize_t ): enet_uint32; cdecl;
   ENetInterceptCallback = function( host: pENetHost;
-    event: pENetEvent ): enet_int; cdecl;
+    event: pENetEvent ): cint; cdecl;
 
   { structs }
   ENetAddress = record
@@ -464,10 +454,10 @@ type
     port : enet_uint16;
   end;
   ENetPacket = record
-    referenceCount : enet_size_t;
+    referenceCount : csize_t;
     flags          : enet_uint32;
     data           : penet_uint8;
-    dataLength     : enet_size_t;
+    dataLength     : csize_t;
     freeCallback   : ENetPacketFreeCallback;
     userData       : Pointer;
   end;
@@ -493,7 +483,7 @@ type
     data                           : Pointer;
     state                          : ENetPeerState;
     channels                       : pENetChannel;
-    channelCount                   : enet_size_t;
+    channelCount                   : csize_t;
     incomingBandwidth              : enet_uint32;
     outgoingBandwidth              : enet_uint32;
     incomingBandwidthThrottleEpoch : enet_uint32;
@@ -536,17 +526,17 @@ type
     outgoingReliableCommands       : TENetList;
     outgoingUnreliableCommands     : TENetList;
     dispatchedCommands             : TENetList;
-    needsDispatch                  : enet_int;
+    needsDispatch                  : cint;
     incomingUnsequencedGroup       : enet_uint16;
     outgoingUnsequencedGroup       : enet_uint16;
     unsequencedWindow              : array[ 0..(ENET_PEER_UNSEQUENCED_WINDOW_SIZE div 32)-1 ] of enet_uint32;
     eventData                      : enet_uint32;
-    totalWaitingData               : enet_size_t;
+    totalWaitingData               : csize_t;
   end;
   ENetCompressor = record
     context    : Pointer;
-    compress   : function( context: Pointer; const inBuffers: pENetBuffer; inBufferCount, inLimit: enet_size_t; outData: penet_uint8; outLimit: enet_size_t ): enet_size_t; cdecl;
-    decompress : function( context: Pointer; const inData: penet_uint8; inLimit: enet_size_t; outData: penet_uint8; outLimit: enet_size_t ): enet_size_t; cdecl;
+    compress   : function( context: Pointer; const inBuffers: pENetBuffer; inBufferCount, inLimit: csize_t; outData: penet_uint8; outLimit: csize_t ): csize_t; cdecl;
+    decompress : function( context: Pointer; const inData: penet_uint8; inLimit: csize_t; outData: penet_uint8; outLimit: csize_t ): csize_t; cdecl;
     destroy    : procedure( context: Pointer ); cdecl;
   end;
   ENetHost = record
@@ -557,35 +547,35 @@ type
     bandwidthThrottleEpoch     : enet_uint32;
     mtu                        : enet_uint32;
     randomSeed                 : enet_uint32;
-    recalculateBandwidthLimits : enet_int;
+    recalculateBandwidthLimits : cint;
     peers                      : pENetPeer;
-    peerCount                  : enet_size_t;
-    channelLimit               : enet_size_t;
+    peerCount                  : csize_t;
+    channelLimit               : csize_t;
     serviceTime                : enet_uint32;
     dispatchQueue              : TENetList;
-    continueSending            : enet_int;
-    packetSize                 : enet_size_t;
+    continueSending            : cint;
+    packetSize                 : csize_t;
     headerFlags                : enet_uint16;
     commands                   : array[ 0..ENET_PROTOCOL_MAXIMUM_PACKET_COMMANDS-1 ] of TENetProtocol;
-    commandCount               : enet_size_t;
+    commandCount               : csize_t;
     buffers                    : array[ 0..ENET_BUFFER_MAXIMUM-1 ] of ENetBuffer;
-    bufferCount                : enet_size_t;
+    bufferCount                : csize_t;
     checksum                   : ENetChecksumCallback;
     compressor                 : ENetCompressor;
     packetData                 : array[ 0..1, 0..ENET_PROTOCOL_MAXIMUM_MTU-1 ] of enet_uint8;
     receivedAddress            : ENetAddress;
     receivedData               : penet_uint8;
-    receivedDataLength         : enet_size_t;
+    receivedDataLength         : csize_t;
     totalSentData              : enet_uint32;
     totalSentPackets           : enet_uint32;
     totalReceivedData          : enet_uint32;
     totalReceivedPackets       : enet_uint32;
     intercept                  : ENetInterceptCallback;
-    connectedPeers             : enet_size_t;
-    bandwidthLimitedPeers      : enet_size_t;
-    duplicatePeers             : enet_size_t;
-    maximumPacketSize          : enet_size_t;
-    maximumWaitingData         : enet_size_t;
+    connectedPeers             : csize_t;
+    bandwidthLimitedPeers      : csize_t;
+    duplicatePeers             : csize_t;
+    maximumPacketSize          : csize_t;
+    maximumWaitingData         : csize_t;
   end;
   ENetEvent = record
     kind      : ENetEventType; //originally "type", which conflicts
@@ -596,15 +586,15 @@ type
   end;
 
 { inline macros }
-function ENET_VERSION_CREATE( const major, minor, patch: Cardinal ): ENetVersion; inline;
-function ENET_VERSION_GET_MAJOR( const version: ENetVersion ): Cardinal; inline;
-function ENET_VERSION_GET_MINOR( const version: ENetVersion ): Cardinal; inline;
-function ENET_VERSION_GET_PATCH( const version: ENetVersion ): Cardinal; inline;
+function ENET_VERSION_CREATE( const major, minor, patch: cint ): ENetVersion; inline;
+function ENET_VERSION_GET_MAJOR( const version: ENetVersion ): cint; inline;
+function ENET_VERSION_GET_MINOR( const version: ENetVersion ): cint; inline;
+function ENET_VERSION_GET_PATCH( const version: ENetVersion ): cint; inline;
 function ENET_VERSION(): ENetVersion; inline;
 
 { library functions }
-function enet_initialize(): enet_int; libraryENet;
-function enet_initialize_with_callbacks( version: ENetVersion; const inits: pENetCallbacks ): enet_int; libraryENet;
+function enet_initialize(): cint; libraryENet;
+function enet_initialize_with_callbacks( version: ENetVersion; const inits: pENetCallbacks ): cint; libraryENet;
 procedure enet_deinitialize(); libraryENet;
 function enet_linked_version(): ENetVersion; libraryENet;
 
@@ -612,42 +602,42 @@ function enet_time_get(): enet_uint32; libraryENet;
 procedure enet_time_set( newTimeBase: enet_uint32 ); libraryENet;
 
 function enet_socket_create( kind: ENetSocketType ): ENetSocket; libraryENet;
-function enet_socket_bind( socket: ENetSocket; const address: pENetAddress ): enet_int; libraryENet;
-function enet_socket_get_address( socket: ENetSocket; address: pENetAddress ): enet_int; libraryENet;
-function enet_socket_listen( socket: ENetSocket; backlog: enet_int ): enet_int; libraryENet;
+function enet_socket_bind( socket: ENetSocket; const address: pENetAddress ): cint; libraryENet;
+function enet_socket_get_address( socket: ENetSocket; address: pENetAddress ): cint; libraryENet;
+function enet_socket_listen( socket: ENetSocket; backlog: cint ): cint; libraryENet;
 function enet_socket_accept( socket: ENetSocket; address: pENetAddress ): ENetSocket; libraryENet;
-function enet_socket_connect( socket: ENetSocket; const address: pENetAddress ): enet_int; libraryENet;
-function enet_socket_send( socket: ENetSocket; const address: pENetAddress; const buffers: pENetBuffer; bufferCount: enet_size_t ): enet_int; libraryENet;
-function enet_socket_receive( socket: ENetSocket; address: pENetAddress; buffers: pENetBuffer; bufferCount: enet_size_t ): enet_int; libraryENet;
-function enet_socket_wait( socket: ENetSocket; condition: penet_uint32; timeout: enet_uint32 ): enet_int; libraryENet;
-function enet_socket_set_option( socket: ENetSocket; option: ENetSocketOption; value: enet_int ): enet_int; libraryENet;
-function enet_socket_get_option( socket: ENetSocket; option: ENetSocketOption; value: penet_int ): enet_int; libraryENet;
-function enet_socket_shutdown( socket: ENetSocket; how: ENetSocketShutdown ): enet_int; libraryENet;
+function enet_socket_connect( socket: ENetSocket; const address: pENetAddress ): cint; libraryENet;
+function enet_socket_send( socket: ENetSocket; const address: pENetAddress; const buffers: pENetBuffer; bufferCount: csize_t ): cint; libraryENet;
+function enet_socket_receive( socket: ENetSocket; address: pENetAddress; buffers: pENetBuffer; bufferCount: csize_t ): cint; libraryENet;
+function enet_socket_wait( socket: ENetSocket; condition: penet_uint32; timeout: enet_uint32 ): cint; libraryENet;
+function enet_socket_set_option( socket: ENetSocket; option: ENetSocketOption; value: cint ): cint; libraryENet;
+function enet_socket_get_option( socket: ENetSocket; option: ENetSocketOption; value: pcint ): cint; libraryENet;
+function enet_socket_shutdown( socket: ENetSocket; how: ENetSocketShutdown ): cint; libraryENet;
 procedure enet_socket_destroy( socket: ENetSocket ); libraryENet;
-function enet_socketset_select( maxSocket: ENetSocket; readSet: pENetSocketSet; writeSet: pENetSocketSet; timeout: enet_uint32 ): enet_int; libraryENet;
+function enet_socketset_select( maxSocket: ENetSocket; readSet: pENetSocketSet; writeSet: pENetSocketSet; timeout: enet_uint32 ): cint; libraryENet;
 
-function enet_address_set_host( address: pENetAddress; const hostName: PChar ): enet_int; libraryENet;
-function enet_address_get_host_ip( const address: pENetAddress; hostName: PChar; nameLength: enet_size_t ): enet_int; libraryENet;
-function enet_address_get_host( const address: pENetAddress; hostName: PChar; nameLength: enet_size_t ): enet_int; libraryENet;
+function enet_address_set_host( address: pENetAddress; const hostName: PChar ): cint; libraryENet;
+function enet_address_get_host_ip( const address: pENetAddress; hostName: PChar; nameLength: csize_t ): cint; libraryENet;
+function enet_address_get_host( const address: pENetAddress; hostName: PChar; nameLength: csize_t ): cint; libraryENet;
 
-function enet_packet_create( const data: Pointer; dataLength: enet_size_t; flags: enet_uint32 ): pENetPacket; libraryENet;
+function enet_packet_create( const data: Pointer; dataLength: csize_t; flags: enet_uint32 ): pENetPacket; libraryENet;
 procedure enet_packet_destroy( packet: pENetPacket ); libraryENet;
-function enet_packet_resize( packet: pENetPacket; dataLength: enet_size_t ): enet_int; libraryENet;
-function enet_crc32( const buffers: pENetBuffer; bufferCount: enet_size_t ): enet_uint32; libraryENet;
+function enet_packet_resize( packet: pENetPacket; dataLength: csize_t ): cint; libraryENet;
+function enet_crc32( const buffers: pENetBuffer; bufferCount: csize_t ): enet_uint32; libraryENet;
 
-function enet_host_create( const address: pENetAddress; peerCount, channelLimit: enet_size_t; incomingBandwidth, outgoingBandwidth: enet_uint32 ): pENetHost; libraryENet;
+function enet_host_create( const address: pENetAddress; peerCount, channelLimit: csize_t; incomingBandwidth, outgoingBandwidth: enet_uint32 ): pENetHost; libraryENet;
 procedure enet_host_destroy( host: pENetHost ); libraryENet;
-function enet_host_connect( host: pENetHost; const address: pENetAddress; channelCount: enet_size_t; data: enet_uint32 ): pENetPeer; libraryENet;
-function enet_host_check_events( host: pENetHost; event: pENetEvent ): enet_int; libraryENet;
-function enet_host_service( host: pENetHost; event: pENetEvent; timeout: enet_uint32 ): enet_int; libraryENet;
+function enet_host_connect( host: pENetHost; const address: pENetAddress; channelCount: csize_t; data: enet_uint32 ): pENetPeer; libraryENet;
+function enet_host_check_events( host: pENetHost; event: pENetEvent ): cint; libraryENet;
+function enet_host_service( host: pENetHost; event: pENetEvent; timeout: enet_uint32 ): cint; libraryENet;
 procedure enet_host_flush( host: pENetHost ); libraryENet;
 procedure enet_host_broadcast( host: pENetHost; channelID: enet_uint8; packet: pENetPacket ); libraryENet;
 procedure enet_host_compress( host: pENetHost; const compressor: pENetCompressor ); libraryENet;
-function enet_host_compress_with_range_coder( host: pENetHost ): enet_int; libraryENet;
-procedure enet_host_channel_limit( host: pENetHost; channelLimit: enet_size_t ); libraryENet;
+function enet_host_compress_with_range_coder( host: pENetHost ): cint; libraryENet;
+procedure enet_host_channel_limit( host: pENetHost; channelLimit: csize_t ); libraryENet;
 procedure enet_host_bandwidth_limit( host: pENetHost; incomingBandwidth, outgoingBandwidth: enet_uint32 ); libraryENet;
 
-function enet_peer_send( peer: pENetPeer; channelID: enet_uint8; packet: pENetPacket ): enet_int; libraryENet;
+function enet_peer_send( peer: pENetPeer; channelID: enet_uint8; packet: pENetPacket ): cint; libraryENet;
 function enet_peer_receive( peer: pENetPeer; channelID: penet_uint8 ): pENetPacket; libraryENet;
 procedure enet_peer_ping( peer: pENetPeer ); libraryENet;
 procedure enet_peer_ping_interval( peer: pENetPeer; pingInterval: enet_uint32 ); libraryENet;
@@ -660,8 +650,8 @@ procedure enet_peer_throttle_configure( peer: pENetPeer; interval, acceleration,
 
 function enet_range_coder_create(): Pointer; libraryENet;
 procedure enet_range_coder_destroy( context: Pointer ); libraryENet;
-function enet_range_coder_compress( context: Pointer; const inBuffers: pENetBuffer; inBufferCount, inLiit: enet_size_t; outData: penet_uint8; outLimit: enet_size_t ): enet_size_t; libraryENet;
-function enet_range_coder_decompress( context: Pointer; const inData: penet_uint8; inLimit: enet_size_t; outData: penet_uint8; outLimit: enet_size_t ): enet_size_t; libraryENet;
+function enet_range_coder_compress( context: Pointer; const inBuffers: pENetBuffer; inBufferCount, inLiit: csize_t; outData: penet_uint8; outLimit: csize_t ): csize_t; libraryENet;
+function enet_range_coder_decompress( context: Pointer; const inData: penet_uint8; inLimit: csize_t; outData: penet_uint8; outLimit: csize_t ): csize_t; libraryENet;
 
 implementation
 
@@ -669,22 +659,22 @@ implementation
 // win32.h / unix.h
 ////////////////////////////////////////////////////////////////////////////////
 
-function ENET_HOST_TO_NET_16( value: Word ): Word;
+function ENET_HOST_TO_NET_16( value: cuint16 ): cuint16;
 begin
   Result := htons(value);
 end;
 
-function ENET_HOST_TO_NET_32( value: LongWord ): LongWord;
+function ENET_HOST_TO_NET_32( value: cuint32 ): cuint32;
 begin
   Result := htonl(value);
 end;
 
-function ENET_NET_TO_HOST_16( value: Word ): Word;
+function ENET_NET_TO_HOST_16( value: cuint16 ): cuint16;
 begin
   Result := ntohs(value);
 end;
 
-function ENET_NET_TO_HOST_32( value: LongWord ): LongWord;
+function ENET_NET_TO_HOST_32( value: cuint32 ): cuint32;
 begin
   Result := ntohl(value);
 end;
@@ -716,7 +706,7 @@ begin
 {$ENDIF}
 end;
 
-function ENET_SOCKETSET_CHECK( var sockset: ENetSocketSet; socket: ENetSocket ): Boolean;
+function ENET_SOCKETSET_CHECK( var sockset: ENetSocketSet; socket: ENetSocket ): cbool;
 begin
 {$IFDEF WINDOWS}
   Result := FD_ISSET( socket, sockset );
@@ -768,27 +758,27 @@ end;
 // time.h
 ////////////////////////////////////////////////////////////////////////////////
 
-function ENET_TIME_LESS( const a, b: Cardinal ): Boolean;
+function ENET_TIME_LESS( const a, b: cint ): cbool;
 begin
   Result := (a - b) >= ENET_TIME_OVERFLOW;
 end;
 
-function ENET_TIME_GREATER( const a, b: Cardinal ): Boolean;
+function ENET_TIME_GREATER( const a, b: cint ): cbool;
 begin
   Result := (b - a) >= ENET_TIME_OVERFLOW;
 end;
 
-function ENET_TIME_LESS_EQUAL( const a, b: Cardinal ): Boolean;
+function ENET_TIME_LESS_EQUAL( const a, b: cint ): cbool;
 begin
   Result := not ENET_TIME_GREATER(a, b);
 end;
 
-function ENET_TIME_GREATER_EQUAL( const a, b: Cardinal ): Boolean;
+function ENET_TIME_GREATER_EQUAL( const a, b: cint ): cbool;
 begin
   Result := not ENET_TIME_LESS(a, b);
 end;
 
-function ENET_TIME_DIFFERENCE( const a, b: Cardinal ): Integer;
+function ENET_TIME_DIFFERENCE( const a, b: cint ): cint;
 begin
   if (a - b) >= ENET_TIME_OVERFLOW then
     Result := b - a
@@ -800,22 +790,22 @@ end;
 // enet.h
 ////////////////////////////////////////////////////////////////////////////////
 
-function ENET_VERSION_CREATE( const major, minor, patch: Cardinal ): ENetVersion;
+function ENET_VERSION_CREATE( const major, minor, patch: cint ): ENetVersion;
 begin
   Result := (major shl 16) or (minor shl 8) or patch;
 end;
 
-function ENET_VERSION_GET_MAJOR( const version: ENetVersion ): Cardinal;
+function ENET_VERSION_GET_MAJOR( const version: ENetVersion ): cint;
 begin
   Result := (version shr 16) and $FF;
 end;
 
-function ENET_VERSION_GET_MINOR( const version: ENetVersion ): Cardinal;
+function ENET_VERSION_GET_MINOR( const version: ENetVersion ): cint;
 begin
   Result := (version shr 8) and $FF;
 end;
 
-function ENET_VERSION_GET_PATCH( const version: ENetVersion ): Cardinal;
+function ENET_VERSION_GET_PATCH( const version: ENetVersion ): cint;
 begin
   Result := version and $FF;
 end;
