@@ -54,7 +54,7 @@ type
   enet_uint16 = cushort;
   penet_uint16 = ^enet_uint16;
 
-  enet_uint32 = cuint;  // TODO: why 'int' instead of 'long'?
+  enet_uint32 = cuint;
   penet_uint32 = ^enet_uint32;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -227,20 +227,20 @@ type
   end;
 
   pENetProtocol = ^TENetProtocol;
-  TENetProtocol = packed record //union
+  TENetProtocol = packed record  // union
     case Byte of
-      0 : (header            : ENetProtocolCommandHeader);
-      1 : (acknowledge       : ENetProtocolAcknowledge);
-      2 : (connect           : ENetProtocolConnect);
-      3 : (verifyConnect     : ENetProtocolVerifyConnect);
-      4 : (disconnect        : ENetProtocolDisconnect);
-      5 : (ping              : ENetProtocolPing);
-      6 : (sendReliable      : ENetProtocolSendReliable);
-      7 : (sendUnreliable    : ENetProtocolSendUnreliable);
-      8 : (sendUnsequenced   : ENetProtocolSendUnsequenced);
-      9 : (sendFragment      : ENetProtocolSendFragment);
-      10: (bandwidthLimit    : ENetProtocolBandwidthLimit);
-      11: (throttleConfigure : ENetProtocolThrottleConfigure);
+    $00: (header            : ENetProtocolCommandHeader);
+    $01: (acknowledge       : ENetProtocolAcknowledge);
+    $02: (connect           : ENetProtocolConnect);
+    $03: (verifyConnect     : ENetProtocolVerifyConnect);
+    $04: (disconnect        : ENetProtocolDisconnect);
+    $05: (ping              : ENetProtocolPing);
+    $06: (sendReliable      : ENetProtocolSendReliable);
+    $07: (sendUnreliable    : ENetProtocolSendUnreliable);
+    $08: (sendUnsequenced   : ENetProtocolSendUnsequenced);
+    $09: (sendFragment      : ENetProtocolSendFragment);
+    $0A: (bandwidthLimit    : ENetProtocolBandwidthLimit);
+    $0B: (throttleConfigure : ENetProtocolThrottleConfigure);
   end;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -346,9 +346,9 @@ const
   ENET_VERSION_MINOR = 3;
   ENET_VERSION_PATCH = 13;
 
-  ENET_HOST_ANY       = 0;
-  ENET_HOST_BROADCAST_ = $FFFFFFFF;  // "_" due to name conflict
-  ENET_PORT_ANY       = 0;
+  ENET_HOST_ANY        = 0;
+  ENET_HOST_BROADCAST_ = $FFFFFFFF;  // "_" due to the name conflict
+  ENET_PORT_ANY        = 0;
 
   ENET_BUFFER_MAXIMUM = 1 + 2 * ENET_PROTOCOL_MAXIMUM_PACKET_COMMANDS;
 
@@ -373,7 +373,7 @@ const
   ENET_PEER_TIMEOUT_LIMIT                = 32;
   ENET_PEER_TIMEOUT_MINIMUM              = 5000;
   ENET_PEER_TIMEOUT_MAXIMUM              = 30000;
-  ENET_PEER_PING_INTERVAL_               = 500;  // "_" due to name conflict
+  ENET_PEER_PING_INTERVAL_               = 500;  // "_" due to the name conflict
   ENET_PEER_UNSEQUENCED_WINDOWS          = 64;
   ENET_PEER_UNSEQUENCED_WINDOW_SIZE      = 1024;
   ENET_PEER_FREE_UNSEQUENCED_WINDOWS     = 32;
@@ -578,7 +578,7 @@ type
     maximumWaitingData         : csize_t;
   end;
   ENetEvent = record
-    kind      : ENetEventType; //originally "type", which conflicts
+    kind      : ENetEventType;  // originally "type", which conflicts
     peer      : pENetPeer;
     channelID : enet_uint8;
     data      : enet_uint32;
