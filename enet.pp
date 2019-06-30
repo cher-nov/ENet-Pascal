@@ -8,11 +8,11 @@ unit ENet;
 
 {
   ENet - Reliable UDP networking library
-  Copyright (c) 2002-2015 Lee Salzman
+  Copyright (c) 2002-2019 Lee Salzman
 
   DLL header for Free Pascal
-  Version 3 for 1.3.13: 2016-08-24
-  Copyright (c) 2015-2016 Dmitry D. Chernov aka Black Doomer
+  Version 4 for 1.3.14: 2019-07-01
+  Copyright (c) 2015-2019 Dmitry D. Chernov aka Black Doomer
 
   Permission is hereby granted, free of charge, to any person obtaining a
   copy of this software and associated documentation files (the "Software"),
@@ -344,7 +344,7 @@ const
   { defines }
   ENET_VERSION_MAJOR = 1;
   ENET_VERSION_MINOR = 3;
-  ENET_VERSION_PATCH = 13;
+  ENET_VERSION_PATCH = 14;
 
   ENET_HOST_ANY        = 0;
   ENET_HOST_BROADCAST_ = $FFFFFFFF;  // "_" due to the name conflict
@@ -616,6 +616,7 @@ function enet_socket_shutdown( socket: ENetSocket; how: ENetSocketShutdown ): ci
 procedure enet_socket_destroy( socket: ENetSocket ); libraryENet;
 function enet_socketset_select( maxSocket: ENetSocket; readSet: pENetSocketSet; writeSet: pENetSocketSet; timeout: enet_uint32 ): cint; libraryENet;
 
+function enet_address_set_host_ip( address: pENetAddress; const hostName: PChar ): cint; libraryENet;
 function enet_address_set_host( address: pENetAddress; const hostName: PChar ): cint; libraryENet;
 function enet_address_get_host_ip( const address: pENetAddress; hostName: PChar; nameLength: csize_t ): cint; libraryENet;
 function enet_address_get_host( const address: pENetAddress; hostName: PChar; nameLength: csize_t ): cint; libraryENet;
