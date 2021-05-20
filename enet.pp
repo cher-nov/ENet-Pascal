@@ -382,10 +382,10 @@ const
   ENET_PEER_FREE_RELIABLE_WINDOWS        = 8;
 
   { enum ENetSocketWait }
-  ENET_SOCKET_WAIT_NONE       = 0;
-  ENET_SOCKET_WAIT_SEND       = 1 shl 0;
-  ENET_SOCKET_WAIT_RECEIVE    = 1 shl 1;
-  ENET_SOCKET_WAIT_INTERRUPT  = 1 shl 2;
+  ENET_SOCKET_WAIT_NONE      = 0;
+  ENET_SOCKET_WAIT_SEND      = 1 shl 0;
+  ENET_SOCKET_WAIT_RECEIVE   = 1 shl 1;
+  ENET_SOCKET_WAIT_INTERRUPT = 1 shl 2;
 
   { enum ENetPacketFlag }
   ENET_PACKET_FLAG_RELIABLE            = 1 shl 0;
