@@ -4,16 +4,17 @@ Version 1 for 1.3.12: 2015-02-25 (based on Delphi 7 headers, version 2)
 Version 2 for 1.3.13: 2016-07-31
 Version 3 for 1.3.13: 2016-08-24
 Version 4 for 1.3.14: 2019-07-01
+Version 5 for 1.3.17: 2021-05-21
 
-Copyright (c) Dmitry D. Chernov aka Black Doomer (blackdoomer@yandex.ru)
+Copyright (c) Dmitry D. Chernov aka BlackDoomer (blackdoomer@yandex.ru)
 DISTRIBUTED UNDER TERMS AND CONDITIONS OF ORIGINAL LICENSE OF USED ENET VERSION
-2015-2019
+2015-2021
 
 ===============================================================================
 LIST OF FILES THAT WERE NOT TRANSLATED:
 
 utility.h - because ENET_MIN and ENET_MAX functions have their analogues in the
-            Math unit
+            Math unit, and ENET_DIFFERENCE is used only by the library code.
 
 ===============================================================================
 LIST OF RENAMED IDENTIFIERS DUE TO NAMING CONFLICTS:

@@ -8,11 +8,11 @@ unit ENet;
 
 {
   ENet - Reliable UDP networking library
-  Copyright (c) 2002-2019 Lee Salzman
+  Copyright (c) 2002-2020 Lee Salzman
 
   DLL header for Free Pascal
-  Version 4 for 1.3.14: 2019-07-01
-  Copyright (c) 2015-2019 Dmitry D. Chernov aka Black Doomer
+  Version 4 for 1.3.17: 2021-05-21
+  Copyright (c) 2015-2021 Dmitry D. Chernov aka BlackDoomer
 
   Permission is hereby granted, free of charge, to any person obtaining a
   copy of this software and associated documentation files (the "Software"),
@@ -344,7 +344,7 @@ const
   { defines }
   ENET_VERSION_MAJOR = 1;
   ENET_VERSION_MINOR = 3;
-  ENET_VERSION_PATCH = 14;
+  ENET_VERSION_PATCH = 17;
 
   ENET_HOST_ANY        = 0;
   ENET_HOST_BROADCAST_ = $FFFFFFFF;  // "_" due to the name conflict
@@ -393,6 +393,9 @@ const
   ENET_PACKET_FLAG_NO_ALLOCATE         = 1 shl 2;
   ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT = 1 shl 3;
   ENET_PACKET_FLAG_SENT                = 1 shl 8;
+
+  { enum ENetPeerFlag }
+  ENET_PEER_FLAG_NEEDS_DISPATCH = 1 shl 0;
 
 type
   { enums }
@@ -523,10 +526,10 @@ type
     acknowledgements               : TENetList;
     sentReliableCommands           : TENetList;
     sentUnreliableCommands         : TENetList;
-    outgoingReliableCommands       : TENetList;
-    outgoingUnreliableCommands     : TENetList;
+    outgoingCommands               : TENetList;
     dispatchedCommands             : TENetList;
-    needsDispatch                  : cint;
+    flags                          : enet_uint16;
+    reserved                       : enet_uint16;
     incomingUnsequencedGroup       : enet_uint16;
     outgoingUnsequencedGroup       : enet_uint16;
     unsequencedWindow              : array[ 0..(ENET_PEER_UNSEQUENCED_WINDOW_SIZE div 32)-1 ] of enet_uint32;
