@@ -339,7 +339,9 @@ function ENET_TIME_DIFFERENCE( const a, b: cint ): cint; inline;
 // enet.h
 ////////////////////////////////////////////////////////////////////////////////
 
+{$IFNDEF libraryENet}
 {$DEFINE libraryENet := cdecl; external 'enet'}
+{$ENDIF}
 
 const
   { defines }
