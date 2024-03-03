@@ -1,9 +1,9 @@
 {$MODE OBJFPC}
-{$PACKRECORDS C}
-{$PACKENUM 4}
-
 {$LONGSTRINGS ON}
 {$MACRO ON}
+
+{$PACKRECORDS C}
+{$PACKENUM 4}
 
 unit ENet;
 
@@ -666,12 +666,12 @@ function enet_socketset_select( maxSocket: ENetSocket; readSet: pENetSocketSet;
   writeSet: pENetSocketSet; timeout: enet_uint32 ): ctypes.cint; libraryENet;
 
 function enet_address_set_host_ip( address: pENetAddress;
-  const hostName: PChar ): ctypes.cint; libraryENet;
+  const hostName: PAnsiChar ): ctypes.cint; libraryENet;
 function enet_address_set_host( address: pENetAddress;
-  const hostName: PChar ): ctypes.cint; libraryENet;
-function enet_address_get_host_ip( const address: pENetAddress; hostName: PChar;
+  const hostName: PAnsiChar ): ctypes.cint; libraryENet;
+function enet_address_get_host_ip( const address: pENetAddress; hostName: PAnsiChar;
   nameLength: ctypes.csize_t ): ctypes.cint; libraryENet;
-function enet_address_get_host( const address: pENetAddress; hostName: PChar;
+function enet_address_get_host( const address: pENetAddress; hostName: PAnsiChar;
   nameLength: ctypes.csize_t ): ctypes.cint; libraryENet;
 
 function enet_packet_create( const data: Pointer; dataLength: ctypes.csize_t;
