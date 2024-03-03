@@ -1,42 +1,54 @@
+///////////////////////////////////////////////////////////////////////////////
 ENet - Reliable UDP networking library
-DLL include files (headers) for Free Pascal
-Version 1 for 1.3.12: 2015-02-25 (based on Delphi 7 headers, version 2)
-Version 2 for 1.3.13: 2016-07-31
-Version 3 for 1.3.13: 2016-08-24
-Version 4 for 1.3.14: 2019-07-01
+Library bindings for Free Pascal, translated from the original C headers.
+
 Version 5 for 1.3.17: 2021-05-21
+Version 4 for 1.3.14: 2019-07-01
+Version 3 for 1.3.13: 2016-08-24
+Version 2 for 1.3.13: 2016-07-31
+Version 1 for 1.3.12: 2015-02-25 (based on Delphi 7 edition, Version 2)
 
 Copyright (c) Dmitry D. Chernov aka BlackDoomer (blackdoomer@yandex.ru)
-DISTRIBUTED UNDER TERMS AND CONDITIONS OF ORIGINAL LICENSE OF USED ENET VERSION
-2015-2021
+LICENSING UNDER TERMS AND CONDITIONS OF THE APPLICABLE VERSION OF ENET LIBRARY.
+2014-2024
 
-===============================================================================
-LIST OF FILES THAT WERE NOT TRANSLATED:
+https://forum.lazarus.freepascal.org/index.php?topic=27855.0
+http://www.freepascal.ru/forum/viewtopic.php?f=25&t=10179
+https://gitlab.com/freepascal.org/fpc/source/-/issues/27891
 
-utility.h - because ENET_MIN and ENET_MAX functions have their analogues in the
-            Math unit, and ENET_DIFFERENCE is used only by the library code.
+///////////////////////////////////////////////////////////////////////////////
+LIST OF FILES THAT WERE SKIPPED AND NOT TRANSLATED:
 
-===============================================================================
-LIST OF RENAMED IDENTIFIERS DUE TO NAMING CONFLICTS:
+1. utility.h
+ - because FPC provides overloaded functions Math.Min() and Math.Max() in RTL,
+   which are similar in meaning to the ENET_MIN() and ENET_MAX() macros, and
+   the ENET_DIFFERENCE() macro is used only by the library code itself.
 
-ENET_HOST_BROADCAST      >>>  ENET_HOST_BROADCAST_
-ENET_PEER_PING_INTERVAL  >>>  ENET_PEER_PING_INTERVAL_
-ENetEvent.type           >>>  ENetEvent.kind
+///////////////////////////////////////////////////////////////////////////////
+LIST OF IDENTIFIERS RENAMED DUE TO NAME CONFLICTS:
 
-===============================================================================
-SPECIAL THANKS TO:
+1. ENET_HOST_BROADCAST_ = ENET_HOST_BROADCAST
+ - case collision with enet_host_broadcast() routine.
 
-Doom2D.org Community (www.doom2d.org)
- - because ENet headers were initially translated for Delphi 7 to use ENet in
-   their project, Doom 2D: Forever.
+2. ENET_PEER_PING_INTERVAL_ = ENET_PEER_PING_INTERVAL
+ - case collision with enet_peer_ping_interval() routine.
+
+3. ENetEvent.kind = ENetEvent.type
+ - keyword clash with language's `type`.
+
+///////////////////////////////////////////////////////////////////////////////
+LIST OF THOSE WHOM I SINCERELY THANK AND EXPRESS MY SPECIAL GRATITUDE TO:
+
+Dmitry V. Merkulov aka PrimuS aka Prostovitalik aka figgisfiddis aka Smokepuff
+ - that cool guy from the Doom2D.org community (www.doom2d.org), with whom we
+   made the long-awaited multiplayer in Doom2D Forever, which was the initial
+   goal of creating the ENet binding for Delphi 7.
 
 daniel_p
- - for many important remarks and his own translation of headers to FreePascal.
+ - for many important and useful comments, as well as his own translation of
+   ENet headers for Free Pascal. https://pastebin.com/zMYxB982
 
 Do-wan Kim
- - author of uenetclass.pp, also author of the ENet 1.1 full translation to
-   Delphi 7, which was very helpful for me when I was creating this one.
-
-Dmitry V. Merkulov aka fgsfds aka PrimuS aka Prostovitalik aka Smokepuff
- - that amazing guy from Doom2D.org Community for whom I had created Delphi 7
-   headers to implement the long-awaited multiplayer in Doom 2D: Forever.
+ - author of uenetclass.pp, and also the author of the full translation of
+   ENet to Delphi 7, which helped me a lot when I created this one.
+   https://code.google.com/p/enet-freepascal
